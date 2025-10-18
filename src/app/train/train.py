@@ -25,8 +25,7 @@ class TrainModel:
                  n_trials: int = 10,
                  optimization_metric: str = "accuracy",
                  mlflow_setup=None,
-                 mlflow_experiment_name: str = "experimento_desviacion_consumos",
-                 mlflow_tracking_uri: str = "http://localhost:5000"):
+                 mlflow_registered_model_name: str = None):
         
         self.df = df
         self.numeric_features = numeric_features
@@ -38,8 +37,8 @@ class TrainModel:
         self.param_distributions = param_distributions or {}
         self.n_trials = n_trials
         self.optimization_metric = optimization_metric
-        self.mlflow_experiment_name = mlflow_experiment_name
         self.mlflow_setup = mlflow_setup
+        self.mlflow_registered_model_name = mlflow_registered_model_name
 
     def train_test_split(self):
         X = self.df.drop(columns=[self.target_column])
@@ -272,8 +271,12 @@ class TrainModel:
                 self.best_pipeline,
                 "model",
                 input_example=X_train.iloc[:5],
-                signature=self.mlflow_setup.models.infer_signature(X_train, y_train_pred)
+                signature=self.mlflow_setup.models.infer_signature(X_train, y_train_pred),
+                registered_model_name=self.mlflow_registered_model_name
             )
+
+            if self.mlflow_registered_model_name:
+                logger.info(f"Model successfully registered in Model Registry as: '{self.mlflow_registered_model_name}'")
             
             # Get the run ID for reference
             run_id = run.info.run_id
