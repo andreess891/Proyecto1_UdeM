@@ -1,0 +1,12 @@
+[project]
+name = "proyecto_udm"
+version = "0.1.0"
+description = "Proyecto 2 de la especialización en ciencia de datos e inteligencia artificial - Cliente Streamlit"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "streamlit",
+  "requests",
+  "pandas",
+  "python-dotenv"
+]
